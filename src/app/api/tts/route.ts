@@ -18,6 +18,13 @@ async function openaiTTS(text: string, apiKey: string): Promise<ArrayBuffer> {
   return res.arrayBuffer();
 }
 
+function addPauses(text: string): string {
+  return text
+    .replace(/\. /g, '.  <break time="900ms"/>  ')
+    .replace(/\.\n/g, '.\n<break time="900ms"/>\n')
+    .replace(/, /g, ',  <break time="400ms"/>  ');
+}
+
 async function elevenLabsTTS(text: string, apiKey: string): Promise<ArrayBuffer> {
   const VOICE_ID = "nPczCjzI2devNBz1zQrb"; // Brian - Deep, Resonant, Comforting
   const res = await fetch(
@@ -30,10 +37,10 @@ async function elevenLabsTTS(text: string, apiKey: string): Promise<ArrayBuffer>
         Accept: "audio/mpeg",
       },
       body: JSON.stringify({
-        text,
+        text: addPauses(text),
         model_id: "eleven_turbo_v2_5",
-        voice_settings: { stability: 0.75, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true },
-        speed: 0.5,
+        voice_settings: { stability: 0.85, similarity_boost: 0.75, style: 0.2, use_speaker_boost: true },
+        speed: 0.7,
       }),
     }
   );
