@@ -10,6 +10,7 @@ import BreathingAnimation from "./BreathingAnimation";
 
 interface Props {
   onComplete: () => void;
+  devMode?: boolean;
 }
 
 const PHASE_ORDER: Array<Exclude<SessionPhase, "complete">> = ["calm", "rehearse", "anchor"];
@@ -20,13 +21,20 @@ const PAUSE_BETWEEN_LINES: Record<string, number> = {
   anchor: 2000,
 };
 
-// Gap between phases — a breath before the next section begins
-const PAUSE_BETWEEN_PHASES = 2000;
+const DEV_PAUSE_BETWEEN_LINES: Record<string, number> = {
+  calm: 100,
+  rehearse: 100,
+  anchor: 100,
+};
 
-export default function SessionPlayer({ onComplete }: Props) {
+const PAUSE_BETWEEN_PHASES = 2000;
+const DEV_PHASE_DURATIONS: Record<string, number> = { calm: 5, rehearse: 5, anchor: 5 };
+
+export default function SessionPlayer({ onComplete, devMode = false }: Props) {
   const { state, dispatch } = useSession();
   const { category, answers, phase, isPlaying } = state;
   const { preloadLines, playLine, stop, isLoading, ttsMode } = useElevenLabsTTS();
+  const log = devMode ? (...args: unknown[]) => console.log("[MindGym Dev]", ...args) : () => {};
 
   const [elapsed, setElapsed] = useState(0);
   const [displayedLines, setDisplayedLines] = useState<string[]>([]);
@@ -53,7 +61,9 @@ export default function SessionPlayer({ onComplete }: Props) {
 
   const allLines = [...script.calm, ...script.rehearse, ...script.anchor];
   const currentPhaseIndex = PHASE_ORDER.indexOf(phase as Exclude<SessionPhase, "complete">);
-  const currentDuration   = PHASE_DURATIONS[phase as Exclude<SessionPhase, "complete">] ?? 90;
+  const currentDuration   = devMode
+    ? (DEV_PHASE_DURATIONS[phase] ?? 5)
+    : (PHASE_DURATIONS[phase as Exclude<SessionPhase, "complete">] ?? 90);
 
   // ── Helpers ────────────────────────────────────────────────────────────────
   function clearPause() {
@@ -71,10 +81,12 @@ export default function SessionPlayer({ onComplete }: Props) {
   // ── Advance to next phase (no dep on speakNextLine) ────────────────────────
   const advancePhase = useCallback((fromPhaseIndex: number) => {
     const nextIndex = fromPhaseIndex + 1;
+    log(`Phase complete: ${PHASE_ORDER[fromPhaseIndex]} → ${PHASE_ORDER[nextIndex] ?? "complete"}`);
     if (nextIndex >= PHASE_ORDER.length) {
       stop();
       dispatch({ type: "SET_PHASE", payload: "complete" });
       dispatch({ type: "SET_PLAYING", payload: false });
+      log("Session complete — calling onComplete");
       onComplete();
     } else {
       resetPhaseState();
@@ -82,7 +94,7 @@ export default function SessionPlayer({ onComplete }: Props) {
       // Wait for phaseRef to update (next tick) then start speaking
       pauseRef.current = setTimeout(() => {
         if (isPlayingRef.current) speakNextRef.current();
-      }, PAUSE_BETWEEN_PHASES);
+      }, devMode ? 300 : PAUSE_BETWEEN_PHASES);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, onComplete, stop]);
@@ -105,13 +117,16 @@ export default function SessionPlayer({ onComplete }: Props) {
     }
 
     const line = lines[idx];
+    log(`Speaking line ${idx + 1}/${lines.length} [${phaseRef.current}]: "${line.slice(0, 60)}..."`);
     setDisplayedLines((prev) => [...prev, line].slice(-3));
     setIsSpeaking(true);
 
     playLine(line, () => {
       setIsSpeaking(false);
       lineIndexRef.current = idx + 1;
-      const gap = PAUSE_BETWEEN_LINES[phaseRef.current] ?? 1800;
+      const gap = devMode
+        ? (DEV_PAUSE_BETWEEN_LINES[phaseRef.current] ?? 100)
+        : (PAUSE_BETWEEN_LINES[phaseRef.current] ?? 1800);
       pauseRef.current = setTimeout(() => {
         if (isPlayingRef.current) speakNextRef.current();
       }, gap);
@@ -123,7 +138,8 @@ export default function SessionPlayer({ onComplete }: Props) {
 
   // ── Pre-load all audio on mount ────────────────────────────────────────────
   useEffect(() => {
-    preloadLines(allLines).then(() => setIsPreloaded(true));
+    log(`Session starting — category: ${category}, phase: ${phase}, devMode: ${devMode}`);
+    preloadLines(allLines).then(() => { log("Audio preloaded"); setIsPreloaded(true); });
     return () => {
       stop();
       if (timerRef.current) clearInterval(timerRef.current);

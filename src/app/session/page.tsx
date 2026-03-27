@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SessionProvider, useSession } from "@/context/SessionContext";
 import SituationSelector from "@/components/onboarding/SituationSelector";
 import PreSessionForm from "@/components/onboarding/PreSessionForm";
@@ -17,7 +17,7 @@ type Step =
   | "post-mood"
   | "complete";
 
-function SessionFlow() {
+function SessionFlow({ devMode }: { devMode: boolean }) {
   const [step, setStep] = useState<Step>("category");
   const { dispatch } = useSession();
 
@@ -28,6 +28,11 @@ function SessionFlow() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0b1f1e]">
+      {devMode && (
+        <div className="bg-yellow-400 text-black text-xs font-bold text-center py-1 px-3">
+          ⚡ DEV MODE — 5s phases · open browser console for logs
+        </div>
+      )}
       {/* Minimal header */}
       <header className="px-6 py-5 flex items-center justify-between border-b border-white/5">
         <Link href="/" className="flex items-center gap-2">
@@ -57,7 +62,7 @@ function SessionFlow() {
           }} />
         )}
         {step === "player" && (
-          <SessionPlayer onComplete={() => setStep("post-mood")} />
+          <SessionPlayer devMode={devMode} onComplete={() => setStep("post-mood")} />
         )}
         {step === "post-mood" && (
           <MoodCheckIn type="post" onNext={() => setStep("complete")} />
@@ -88,9 +93,14 @@ function StepProgress({ step }: { step: Step }) {
 }
 
 export default function SessionPage() {
+  const [devMode, setDevMode] = useState(false);
+  useEffect(() => {
+    setDevMode(new URLSearchParams(window.location.search).get("dev") === "true");
+  }, []);
+
   return (
     <SessionProvider>
-      <SessionFlow />
+      <SessionFlow devMode={devMode} />
     </SessionProvider>
   );
 }
