@@ -1,8 +1,7 @@
-import { Header, VideoSection } from "@/components/landing/ClientSections";
+import { Header, VideoSection, PricingSection } from "@/components/landing/ClientSections";
 import HeroSection from "@/components/landing/HeroSection";
 import HowItWorks from "@/components/landing/HowItWorks";
 import RoadmapPreview from "@/components/landing/RoadmapPreview";
-import PricingSection from "@/components/landing/PricingSection";
 
 export default function Home() {
   return (
