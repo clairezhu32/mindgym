@@ -173,11 +173,20 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <p className="text-center mt-6 text-[#8fb5b3] text-sm">
-          <Link href="/" className="hover:text-[#eef2f1] transition-colors underline underline-offset-2">
+        <div className="text-center mt-6 space-y-3">
+          <Link
+            href="/session"
+            className="block w-full py-3 rounded-xl border border-white/10 text-[#8fb5b3] text-sm font-semibold hover:border-white/20 hover:text-[#eef2f1] transition-all"
+          >
+            Try a session without account →
+          </Link>
+          <p className="text-[#8fb5b3]/60 text-xs">
+            Your progress won't be saved
+          </p>
+          <Link href="/" className="block text-[#8fb5b3] text-sm hover:text-[#eef2f1] transition-colors underline underline-offset-2">
             ← Back to home
           </Link>
-        </p>
+        </div>
       </div>
     </div>
   );

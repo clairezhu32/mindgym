@@ -30,8 +30,8 @@ export async function proxy(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   const { pathname } = request.nextUrl;
 
-  // Protect /session and /dashboard — redirect unauthenticated users to /login
-  if (!user && (pathname.startsWith("/session") || pathname.startsWith("/dashboard"))) {
+  // Protect /dashboard only — /session is open to guests
+  if (!user && pathname.startsWith("/dashboard")) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     return NextResponse.redirect(loginUrl);
@@ -48,5 +48,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/session/:path*", "/dashboard/:path*", "/login"],
+  matcher: ["/dashboard/:path*", "/login"],
 };
