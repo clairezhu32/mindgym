@@ -19,7 +19,7 @@ async function openaiTTS(text: string, apiKey: string): Promise<ArrayBuffer> {
 }
 
 async function elevenLabsTTS(text: string, apiKey: string): Promise<ArrayBuffer> {
-  const VOICE_ID = "SAz9YHcvj6GT2YYXdXww"; // River - Relaxed, Calm
+  const VOICE_ID = "EXAVITQu4vr4xnSDxMaL"; // Sarah - Mature, Reassuring, Confident
   const res = await fetch(
     `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`,
     {
