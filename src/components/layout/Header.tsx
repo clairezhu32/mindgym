@@ -29,7 +29,7 @@ export default function Header() {
       <Link href="/" className="flex items-center gap-2">
         <span className="text-2xl">🧠</span>
         <span className="font-bold text-xl tracking-tight text-white">
-          Mind<span className="text-[#7ffffd]">Gym</span>
+          <span className="text-white">Mind</span><span className="text-[#7ffffd]">Gym</span>
         </span>
       </Link>
       <nav className="flex items-center gap-6 text-sm text-[#c8e8e7]">

@@ -80,7 +80,7 @@ export default function RoadmapPreview() {
                 <div className="flex items-center gap-2">
                   <span className="text-lg">🧠</span>
                   <span className="font-bold text-sm">
-                    Mind<span className="text-[#2b7a78]">Gym</span>
+                    <span className="text-white">Mind</span><span className="text-[#2b7a78]">Gym</span>
                   </span>
                 </div>
                 <span className="text-xs text-[#8fb5b3]">Alex's roadmap</span>

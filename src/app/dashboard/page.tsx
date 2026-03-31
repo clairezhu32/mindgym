@@ -46,7 +46,7 @@ export default function DashboardPage() {
         <Link href="/" className="flex items-center gap-2">
           <span className="text-xl">🧠</span>
           <span className="font-bold text-lg tracking-tight">
-            Mind<span className="text-[#2b7a78]">Gym</span>
+            <span className="text-white">Mind</span><span className="text-[#2b7a78]">Gym</span>
           </span>
         </Link>
         <div className="flex items-center gap-4">

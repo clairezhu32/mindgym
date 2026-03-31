@@ -86,7 +86,7 @@ export default function LoginPage() {
         <Link href="/" className="flex items-center justify-center gap-2 mb-10">
           <span className="text-2xl">🧠</span>
           <span className="font-bold text-xl tracking-tight text-[#eef2f1]">
-            Mind<span className="text-[#2b7a78]">Gym</span>
+            <span className="text-white">Mind</span><span className="text-[#2b7a78]">Gym</span>
           </span>
         </Link>
 
