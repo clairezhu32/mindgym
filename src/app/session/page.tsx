@@ -6,6 +6,7 @@ import SituationSelector from "@/components/onboarding/SituationSelector";
 import PreSessionForm from "@/components/onboarding/PreSessionForm";
 import MoodCheckIn from "@/components/onboarding/MoodCheckIn";
 import SessionPlayer from "@/components/player/SessionPlayer";
+import GeneratingSession from "@/components/player/GeneratingSession";
 import SessionComplete from "@/components/player/SessionComplete";
 import Link from "next/link";
 
@@ -13,6 +14,7 @@ type Step =
   | "category"
   | "form"
   | "pre-mood"
+  | "generating"
   | "player"
   | "post-mood"
   | "complete";
@@ -56,10 +58,10 @@ function SessionFlow({ devMode }: { devMode: boolean }) {
           />
         )}
         {step === "pre-mood" && (
-          <MoodCheckIn type="pre" onNext={() => {
-            dispatch({ type: "START_SESSION" });
-            setStep("player");
-          }} />
+          <MoodCheckIn type="pre" onNext={() => setStep("generating")} />
+        )}
+        {step === "generating" && (
+          <GeneratingSession onReady={() => setStep("player")} />
         )}
         {step === "player" && (
           <SessionPlayer devMode={devMode} onComplete={() => setStep("post-mood")} />
@@ -76,7 +78,7 @@ function SessionFlow({ devMode }: { devMode: boolean }) {
 }
 
 function StepProgress({ step }: { step: Step }) {
-  const steps: Step[] = ["category", "form", "pre-mood", "player", "post-mood", "complete"];
+  const steps: Step[] = ["category", "form", "pre-mood", "generating", "player", "post-mood", "complete"];
   const current = steps.indexOf(step);
   return (
     <div className="flex items-center gap-1.5">

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useReducer } from "react";
-import { Category, PersonalizationAnswers, SessionPhase, SessionState } from "@/types";
+import { Category, GeneratedScript, PersonalizationAnswers, SessionPhase, SessionState } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 
 type Action =
@@ -12,6 +12,7 @@ type Action =
   | { type: "SET_PHASE"; payload: SessionPhase }
   | { type: "SET_PLAYING"; payload: boolean }
   | { type: "SET_PROGRESS"; payload: number }
+  | { type: "SET_SCRIPT"; payload: GeneratedScript }
   | { type: "START_SESSION" }
   | { type: "RESET" };
 
@@ -24,6 +25,7 @@ const initialState: SessionState = {
   isPlaying: false,
   audioProgress: 0,
   sessionId: null,
+  generatedScript: null,
 };
 
 function reducer(state: SessionState, action: Action): SessionState {
@@ -42,6 +44,8 @@ function reducer(state: SessionState, action: Action): SessionState {
       return { ...state, isPlaying: action.payload };
     case "SET_PROGRESS":
       return { ...state, audioProgress: action.payload };
+    case "SET_SCRIPT":
+      return { ...state, generatedScript: action.payload };
     case "START_SESSION":
       return { ...state, sessionId: uuidv4(), phase: "calm", audioProgress: 0 };
     case "RESET":

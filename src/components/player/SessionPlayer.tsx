@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useSession } from "@/context/SessionContext";
 import { getScript } from "@/lib/session-scripts";
 import { useElevenLabsTTS } from "@/lib/useElevenLabsTTS";
-import { Category, PersonalizationAnswers, SessionPhase, PHASE_DURATIONS } from "@/types";
+import { Category, PersonalizationAnswers, SessionPhase, PHASE_DURATIONS, GeneratedScript } from "@/types";
 import PhaseIndicator from "./PhaseIndicator";
 import BreathingAnimation from "./BreathingAnimation";
 
@@ -32,7 +32,7 @@ const DEV_PHASE_DURATIONS: Record<string, number> = { calm: 5, rehearse: 5, anch
 
 export default function SessionPlayer({ onComplete, devMode = false }: Props) {
   const { state, dispatch } = useSession();
-  const { category, answers, phase, isPlaying } = state;
+  const { category, answers, phase, isPlaying, generatedScript } = state;
   const { preloadLines, playLine, stop, isLoading, ttsMode } = useElevenLabsTTS();
   const log = devMode ? (...args: unknown[]) => console.log("[MindGym Dev]", ...args) : () => {};
 
@@ -52,10 +52,11 @@ export default function SessionPlayer({ onComplete, devMode = false }: Props) {
   useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
   useEffect(() => { phaseRef.current = phase; }, [phase]);
 
-  const script = getScript(
+  const fallbackScript = getScript(
     (category ?? "general") as Category,
     answers ?? ({ eventName: "", eventDate: "", goal: "" } as PersonalizationAnswers)
   );
+  const script: GeneratedScript = generatedScript ?? fallbackScript;
   const scriptRef = useRef(script);
   useEffect(() => { scriptRef.current = script; }, [script]);
 

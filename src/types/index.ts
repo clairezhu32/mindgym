@@ -20,6 +20,12 @@ export interface PersonalizationAnswers {
   goal: string;
 }
 
+export interface GeneratedScript {
+  calm: string[];
+  rehearse: string[];
+  anchor: string[];
+}
+
 export interface SessionState {
   category: Category | null;
   answers: PersonalizationAnswers | null;
@@ -29,6 +35,7 @@ export interface SessionState {
   isPlaying: boolean;
   audioProgress: number;
   sessionId: string | null;
+  generatedScript: GeneratedScript | null;
 }
 
 export const CATEGORIES: CategoryConfig[] = [
