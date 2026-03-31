@@ -7,10 +7,12 @@ import PreSessionForm from "@/components/onboarding/PreSessionForm";
 import MoodCheckIn from "@/components/onboarding/MoodCheckIn";
 import SessionPlayer from "@/components/player/SessionPlayer";
 import GeneratingSession from "@/components/player/GeneratingSession";
+import SessionLimitGate from "@/components/player/SessionLimitGate";
 import SessionComplete from "@/components/player/SessionComplete";
 import Link from "next/link";
 
 type Step =
+  | "gate"
   | "category"
   | "form"
   | "pre-mood"
@@ -20,12 +22,12 @@ type Step =
   | "complete";
 
 function SessionFlow({ devMode }: { devMode: boolean }) {
-  const [step, setStep] = useState<Step>("category");
+  const [step, setStep] = useState<Step>("gate");
   const { dispatch } = useSession();
 
   function reset() {
     dispatch({ type: "RESET" });
-    setStep("category");
+    setStep("gate");
   }
 
   return (
@@ -48,6 +50,9 @@ function SessionFlow({ devMode }: { devMode: boolean }) {
 
       {/* Content */}
       <main className="flex-1 flex items-center justify-center px-6 py-12">
+        {step === "gate" && (
+          <SessionLimitGate onAllowed={() => setStep("category")} />
+        )}
         {step === "category" && (
           <SituationSelector onNext={() => setStep("form")} />
         )}
@@ -78,11 +83,11 @@ function SessionFlow({ devMode }: { devMode: boolean }) {
 }
 
 function StepProgress({ step }: { step: Step }) {
-  const steps: Step[] = ["category", "form", "pre-mood", "generating", "player", "post-mood", "complete"];
-  const current = steps.indexOf(step);
+  const visibleSteps: Step[] = ["category", "form", "pre-mood", "generating", "player", "post-mood", "complete"];
+  const current = step === "gate" ? -1 : visibleSteps.indexOf(step);
   return (
     <div className="flex items-center gap-1.5">
-      {steps.map((_, i) => (
+      {visibleSteps.map((_, i) => (
         <div
           key={i}
           className={`h-1.5 rounded-full transition-all duration-300 ${

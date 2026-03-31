@@ -86,7 +86,7 @@ export default function SessionComplete({ onStartNew }: Props) {
       </div>
 
       <h1 className="text-3xl font-bold mb-3">Session complete</h1>
-      <p className="text-[#8fb5b3] mb-8">
+      <p className="text-white mb-8">
         {categoryLabel[category ?? "general"]} · 5 min session
       </p>
 
