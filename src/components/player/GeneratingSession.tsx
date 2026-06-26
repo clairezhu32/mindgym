@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useSession } from "@/context/SessionContext";
-import { getSmartScript } from "@/lib/domain-scripts";
+import { getJobSearchScript } from "@/lib/job-search-scripts";
 
 interface Props {
   onReady: () => void;
@@ -10,13 +10,13 @@ interface Props {
 
 export default function GeneratingSession({ onReady }: Props) {
   const { state, dispatch } = useSession();
-  const { answers } = state;
+  const { jobSearchAnswers } = state;
 
   useEffect(() => {
-    const script = getSmartScript(
-      answers?.eventName ?? "",
-      answers?.eventDate ?? "",
-      answers?.goal ?? ""
+    const script = getJobSearchScript(
+      jobSearchAnswers?.dreamJob ?? "",
+      jobSearchAnswers?.blockers ?? ["confidence"],
+      jobSearchAnswers?.customBlocker ?? ""
     );
 
     dispatch({ type: "SET_SCRIPT", payload: script });
@@ -25,7 +25,6 @@ export default function GeneratingSession({ onReady }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Brief flash while script is matched — will transition almost instantly
   return (
     <div className="flex flex-col items-center gap-6 animate-fade-up text-center">
       <div className="relative w-20 h-20">
@@ -35,13 +34,10 @@ export default function GeneratingSession({ onReady }: Props) {
           <span className="text-2xl">🧠</span>
         </div>
       </div>
-
       <div>
-        <p className="text-[#eef2f1] font-semibold mb-2">
-          Personalizing your session…
-        </p>
+        <p className="text-[#eef2f1] font-semibold mb-2">Building your session…</p>
         <p className="text-[#8fb5b3] text-sm">
-          Tailored for: {answers?.eventName ?? "your event"}
+          Personalizing for: {jobSearchAnswers?.dreamJob ?? "your goal"}
         </p>
       </div>
     </div>

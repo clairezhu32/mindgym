@@ -1,12 +1,13 @@
 "use client";
 
 import React, { createContext, useContext, useReducer } from "react";
-import { Category, GeneratedScript, PersonalizationAnswers, SessionPhase, SessionState } from "@/types";
+import { Category, GeneratedScript, JobSearchAnswers, PersonalizationAnswers, SessionPhase, SessionState } from "@/types";
 import { v4 as uuidv4 } from "uuid";
 
 type Action =
   | { type: "SET_CATEGORY"; payload: Category }
   | { type: "SET_ANSWERS"; payload: PersonalizationAnswers }
+  | { type: "SET_JOB_SEARCH_ANSWERS"; payload: JobSearchAnswers }
   | { type: "SET_PRE_MOOD"; payload: number }
   | { type: "SET_POST_MOOD"; payload: number }
   | { type: "SET_PHASE"; payload: SessionPhase }
@@ -19,6 +20,7 @@ type Action =
 const initialState: SessionState = {
   category: null,
   answers: null,
+  jobSearchAnswers: null,
   preMood: null,
   postMood: null,
   phase: "calm",
@@ -34,6 +36,8 @@ function reducer(state: SessionState, action: Action): SessionState {
       return { ...state, category: action.payload };
     case "SET_ANSWERS":
       return { ...state, answers: action.payload };
+    case "SET_JOB_SEARCH_ANSWERS":
+      return { ...state, jobSearchAnswers: action.payload };
     case "SET_PRE_MOOD":
       return { ...state, preMood: action.payload };
     case "SET_POST_MOOD":

@@ -6,6 +6,42 @@ export type Category =
 
 export type SessionPhase = "calm" | "rehearse" | "anchor" | "complete";
 
+// ── Job-search mindset flow ───────────────────
+export type JobBlocker =
+  | "not_qualified"
+  | "fear_freeze"
+  | "imposter"
+  | "rejection"
+  | "competition"
+  | "networking"
+  | "confidence"
+  | "direction"
+  | "custom";
+
+export interface BlockerConfig {
+  id: JobBlocker;
+  label: string;
+  icon: string;
+}
+
+export const BLOCKERS: BlockerConfig[] = [
+  { id: "not_qualified", icon: "📄", label: "I'm not qualified enough" },
+  { id: "fear_freeze",   icon: "🧊", label: "I'll freeze in interviews" },
+  { id: "imposter",      icon: "🎭", label: "I feel like a fraud" },
+  { id: "rejection",     icon: "💔", label: "I'm afraid of rejection" },
+  { id: "competition",   icon: "📊", label: "The market is too competitive" },
+  { id: "networking",    icon: "🤝", label: "I don't know how to network" },
+  { id: "confidence",    icon: "🪞", label: "I lack confidence" },
+  { id: "direction",     icon: "🧭", label: "I don't know where to start" },
+];
+
+export interface JobSearchAnswers {
+  hasOffer: boolean;
+  dreamJob: string;
+  blockers: JobBlocker[];
+  customBlocker: string;
+}
+
 export interface CategoryConfig {
   id: Category;
   label: string;
@@ -29,6 +65,7 @@ export interface GeneratedScript {
 export interface SessionState {
   category: Category | null;
   answers: PersonalizationAnswers | null;
+  jobSearchAnswers: JobSearchAnswers | null;
   preMood: number | null;
   postMood: number | null;
   phase: SessionPhase;
