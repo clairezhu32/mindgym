@@ -1,0 +1,289 @@
+import type { Category } from "@/types";
+
+export interface StoryTemplate {
+  id: string;
+  category: Category;
+  title: string;
+  /** 300-400 words, first person. Supports [NAME], [EVENT], [GOAL], [DATE]. */
+  body: string;
+}
+
+function interpolate(template: string, vars: Record<string, string>): string {
+  return template
+    .replace(/\[NAME\]/g, vars.name || "you")
+    .replace(/\[EVENT\]/g, vars.event || "your big moment")
+    .replace(/\[GOAL\]/g, vars.goal || "perform at your best")
+    .replace(/\[DATE\]/g, vars.date || "soon");
+}
+
+export interface StoryVars {
+  name?: string;
+  event?: string;
+  goal?: string;
+  date?: string;
+}
+
+export function renderStory(t: StoryTemplate, vars: StoryVars): string {
+  return interpolate(t.body, {
+    name: vars.name ?? "",
+    event: vars.event ?? "",
+    goal: vars.goal ?? "",
+    date: vars.date ?? "",
+  });
+}
+
+/** Pick template by day of year: dayOfYear % 14 */
+export function pickStoryTemplate(date: Date = new Date()): StoryTemplate {
+  const start = new Date(date.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((date.getTime() - start.getTime()) / 86400000);
+  return STORY_TEMPLATES[dayOfYear % STORY_TEMPLATES.length];
+}
+
+export const STORY_TEMPLATES: StoryTemplate[] = [
+  // ── Day 1 · interview ──────────────────────────────────────────────
+  {
+    id: "story-01",
+    category: "interview",
+    title: "The Morning After the Offer",
+    body: `I wake up and for a second I forget — then I remember. [NAME] got the offer. I actually got it.
+
+I replay yesterday in my mind, the way you replay a favorite scene. I walked into [EVENT] calm. Not pretending to be calm — actually calm, because I had rehearsed this so many times in my head that my body already knew the choreography. When they asked the hard question, the one I was afraid of, I smiled. I had an answer ready, a real one, drawn from work I am genuinely proud of.
+
+What strikes me now, lying here with coffee going cold on the nightstand, is how ordinary the confidence felt. It wasn't a performance. I wasn't acting like someone impressive. I was just... prepared. I knew my stories. I knew my numbers. I knew what I wanted, and I said it out loud: [GOAL]. Saying it clearly was the whole game.
+
+My phone buzzes — a friend asking how it went. I type back: "I got it." Three words I have imagined typing a hundred times. They feel better than I imagined, heavier, more real.
+
+Later I will negotiate. Later I will tell my family. Later there will be paperwork and start dates and a hundred small logistics. But right now, in this quiet morning, I let myself sit inside the win. I earned this. Every late night preparing, every visualization session, every moment I chose to keep going instead of shrinking — it all compounded into yesterday.
+
+[DATE] felt impossibly far away when I started. Now it is a date I will remember. This is what showing up prepared feels like. This is what I am capable of.`,
+  },
+  // ── Day 2 · presentation ───────────────────────────────────────────
+  {
+    id: "story-02",
+    category: "presentation",
+    title: "Owning the Room",
+    body: `The applause is still ringing in my ears as I step off the stage. Someone from the third row catches my eye and mouths "great job." I nod, smiling, because for once I believe it completely.
+
+Rewind two hours. I am backstage, and instead of the old spiral — the racing thoughts, the dry mouth — there is something unfamiliar: stillness. I close my eyes and run through my opening line one final time. I have said it so many times in rehearsal that it feels less like memorizing and more like remembering. My shoulders are down. My breathing is slow. I am ready.
+
+The lights come up. I walk out, and the first thirty seconds are exactly as I visualized: I plant my feet, I make eye contact with one friendly face, and I begin. My voice is steady. Not loud — steady. There is a difference, and today I understand it.
+
+Halfway through, someone asks a challenging question. The old me would have frozen. Today's me pauses, takes a breath, and answers with a story instead of a deflection. The room leans in. I can feel it — that shift when an audience stops evaluating you and starts following you.
+
+Afterward, three people come up to me. One wants to connect on LinkedIn. One asks for my slides. The third just says, "You made that look easy." I laugh, because they have no idea how many mornings I spent rehearsing this exact outcome in my head — [EVENT], the lights, the questions, the applause.
+
+[NAME] did not become a great speaker today. [NAME] became a prepared one. And preparation, it turns out, is indistinguishable from talent when the lights come on. [GOAL] — that was the goal. Done.`,
+  },
+  // ── Day 3 · general ────────────────────────────────────────────────
+  {
+    id: "story-03",
+    category: "general",
+    title: "The Day I Stopped Shrinking",
+    body: `I notice it first in the small moments. I speak up in the meeting without rehearsing the sentence three times in my head. I disagree with someone senior, respectfully, clearly — and the sky does not fall. I ask for what I need instead of working around not having it.
+
+[EVENT] used to live in my head as a threat. Today I walked through it like it was a door I had already opened a hundred times. Because I had — in my mind, every morning, I rehearsed exactly this. The calm breathing. The steady voice. The version of me who does not apologize for taking up space.
+
+What nobody tells you about confidence is that it is boring from the inside. There was no dramatic transformation, no movie montage. Just a quiet accumulation: one visualization session, one deep breath, one moment of choosing courage over comfort. Repeated until the new pattern became the default.
+
+Someone asked me today how I stay so composed under pressure. I almost laughed. If only they knew how much deliberate practice goes into looking effortless. But that is the secret, isn't it? Composure is a skill. I trained it like any other skill — with reps.
+
+Tonight I am writing this down so I remember: [NAME] is someone who shows up. [GOAL] is not a wish anymore; it is a description of what I do now. [DATE] is behind me, and I handled it. Whatever comes next, I have proof — my own proof — that I can handle that too.
+
+The shrinking days are over. I checked. There is more room on this side.`,
+  },
+  // ── Day 4 · athletic ───────────────────────────────────────────────
+  {
+    id: "story-04",
+    category: "athletic",
+    title: "Trust the Training",
+    body: `The starting signal sounds and everything narrows to exactly what I trained for. My body moves before my mind can interfere — that is the whole point of all those mental rehearsals. I have run this race a hundred times in my head. This is just the hundred-and-first.
+
+There is a moment, about halfway through, when doubt tries to get a word in. The old familiar voice: slow down, play it safe, don't embarrass yourself. But I have an answer ready, because I practiced this too. I breathe into it — in for four, out for six — and the voice fades. My training takes over. My body knows what to do. I let it.
+
+I think about [EVENT] and how I used to picture it with dread. Now I picture the finish, the way my legs feel in the final stretch, the sound of my own breathing finding its rhythm. Visualization is not magic. It is just giving your nervous system a preview so that pressure feels like a rerun instead of a surprise.
+
+The finish line arrives the way I imagined it: I am spent, I am grinning, and I am proud. Not because I won — though today I did well — but because I executed. I trusted the preparation. I stayed in my process when it got hard.
+
+[NAME] showed up as an athlete today. Disciplined in training, calm in competition, honest in reflection. [GOAL] was never about the outcome on the scoreboard. It was about becoming someone who does the work and trusts it.
+
+[DATE] is in the books. On to the next one — same process, same trust.`,
+  },
+  // ── Day 5 · interview ──────────────────────────────────────────────
+  {
+    id: "story-05",
+    category: "interview",
+    title: "The Conversation That Changed Everything",
+    body: `It did not feel like an interrogation. That is the first thing I tell everyone who asks. [EVENT] felt like a conversation — because I decided, beforehand, that it would be one.
+
+I remember the moment it clicked. They asked me to walk through a project, and instead of reciting bullet points from my resume, I told the story the way I had rehearsed it in my head a dozen times: the problem, what I tried, what failed, what I learned, what I would do differently. Real. Specific. Human. The interviewer's pen stopped moving. They were listening — actually listening.
+
+Then came the question I had been dreading. In the old days, my mind would have gone blank. But I had visualized this exact scenario: the pause, the breath, the honest answer. "That's a great question," I said, "let me think about that for a moment." And I did. I thought. Out loud. Clearly. The pause that used to terrify me became my greatest asset — it made me sound thoughtful instead of rehearsed.
+
+When they asked if I had questions for them, I asked the ones I genuinely cared about. Not the performative ones from interview guides. Real questions, because I was evaluating them too. That shift — from begging to choosing — changed the entire energy of the room.
+
+Walking out, I felt something I had not expected: pride, regardless of the outcome. I had shown up as myself, prepared and honest. [NAME] does not need to be perfect. [NAME] needs to be present, prepared, and real.
+
+[GOAL] — I said it out loud in that room, and I meant it. Whatever [DATE] brings, I know I gave it everything I had. And that feeling? That is the win nobody can take from me.`,
+  },
+  // ── Day 6 · presentation ───────────────────────────────────────────
+  {
+    id: "story-06",
+    category: "presentation",
+    title: "The Storyteller",
+    body: `Nobody remembers slides. They remember stories. I learned that today — or rather, I proved it to myself today.
+
+[EVENT] was supposed to be a standard update. Numbers, timelines, next steps. I could have done the safe thing: dense slides, monotone delivery, everyone checking their phones by slide four. Instead, I did what I had been rehearsing in my head all week. I opened with a story — a real one, about a user, about a problem that kept me up at night. The room went quiet in the way that means attention, not politeness.
+
+I had visualized every beat of this. The opening. The moment I would pause for effect. The Q&A where someone would push back and I would welcome it instead of fearing it. When that pushback came — right on schedule, almost funny how predictable it was — I smiled. "I'm glad you asked," I said, and I meant it. Because I was ready.
+
+Here is what rehearsal gives you: freedom. When the structure is in your bones, you can be spontaneous. I went off-script twice today, followed a thread the audience was pulling on, and it worked — because the foundation was solid enough to improvise on.
+
+After it ended, my manager pulled me aside. "That was the best presentation you've given." I nodded, but inside I was thinking: it was the best-prepared one. There is a direct line between the mornings I spent visualizing this and the confidence I felt delivering it.
+
+[NAME] is becoming someone who communicates with impact. Not by being the loudest voice, but by being the clearest one. [GOAL] is not a destination — it is a practice. And today, the practice paid off.`,
+  },
+  // ── Day 7 · general ────────────────────────────────────────────────
+  {
+    id: "story-07",
+    category: "general",
+    title: "Proof of Concept: Me",
+    body: `I keep a list now. A private one, in my notes app. Every time I do something that the old me would have avoided, I write it down. Today's entry: "[EVENT] — handled it. Felt calm. Would do again."
+
+The list is getting long. That is the point.
+
+Six months ago, [DATE] would have been a date I dreaded. I would have spent the week before it running disaster scenarios in my head — every way it could go wrong, every way I could embarrass myself. Now I run a different movie: the version where I am prepared, where I breathe, where I handle whatever comes. Same imagination. Different channel.
+
+Someone asked me recently what changed. I told them the truth: I started treating confidence like a trainable skill instead of a personality trait. You would not expect to get strong without lifting weights. Why would you expect to feel confident without practicing composure? So I practiced. Five minutes a day. Visualization. Breathing. Rehearsal. Boring, unglamorous reps.
+
+And then days like today happen, and people think you are just "naturally confident." I let them think that. The truth is better: [NAME] built this. Deliberately. One session at a time.
+
+[GOAL] used to be something I whispered to myself, half-embarrassed. Now it is just a fact about how I operate. I set the intention, I do the reps, I show up.
+
+If you are reading this on a day when you doubt yourself: start the list. Write down one brave thing. Then another. Proof accumulates. So do you.`,
+  },
+  // ── Day 8 · interview (set 2) ──────────────────────────────────────
+  {
+    id: "story-08",
+    category: "interview",
+    title: "Second Round, First Choice",
+    body: `They called me back. Second round. And this time, walking into [EVENT], I felt something new: not just calm, but curiosity. I wanted to be here. That changes everything.
+
+The first round I survived on preparation. This round, I thrived on it. The difference is subtle but I feel it in my body — looser shoulders, easier smile, the ability to actually listen instead of just waiting for my turn to talk. When you are not spending all your energy managing anxiety, you have energy left over for the actual conversation. Who knew.
+
+They dug deeper this time. Technical questions, scenario questions, the dreaded "tell me about a time you failed." I had stories ready — not scripted, but lived-in. I have started to understand that interviews are not tests. They are auditions for a working relationship. So I showed them what it would be like to work with me: thoughtful, honest, direct. I asked sharp questions. I pushed back once, respectfully, on an assumption. The hiring manager smiled at that. "Good catch," she said.
+
+Here is what I keep coming back to: [NAME] prepared for this like an athlete. The visualization sessions, the breathing drills, the rehearsed stories — they were not about faking confidence. They were about removing the noise so the real signal could come through. And the real signal is: I am good at what I do, and I know it.
+
+[DATE] is circled on my calendar for a reason. It is the day I stopped hoping to be chosen and started choosing myself. [GOAL] — I am close enough to touch it now. One more round. I am ready.`,
+  },
+  // ── Day 9 · presentation (set 2) ────────────────────────────────────
+  {
+    id: "story-09",
+    category: "presentation",
+    title: "The High-Stakes Pitch",
+    body: `The stakes were real today. Not a practice run, not a friendly audience — [EVENT], with decision-makers in the room and a real outcome on the line. And I delivered.
+
+I will be honest: I felt the nerves this morning. The old familiar flutter. But here is what is different now — I know what to do with it. I sat with it for five minutes, breathed through it, and ran my mental rehearsal one final time. By the time I walked in, the nerves had converted into something useful: alertness. Energy. Presence.
+
+I opened strong — the line I had rehearsed twenty times, delivered like I was saying it for the first time. Then I did the thing I used to be terrified of: I read the room. I slowed down when I saw confusion. I sped up when I saw boredom. I answered the skeptical question head-on instead of dancing around it. Presence is not a talent. It is attention, trained.
+
+The moment I will remember: the most senior person in the room asked a follow-up question — not a challenge, a genuine "tell me more." That is when you know you have them. Not when they clap. When they lean in.
+
+Afterward, I sat in my car for a minute before driving home. Not replaying mistakes — there is a first. Just sitting with the feeling of a job done well. [NAME] does not get lucky in high-stakes moments. [NAME] gets ready.
+
+[GOAL] was the target. Today I hit it. [DATE] will be a good memory — the day preparation met opportunity and neither blinked.`,
+  },
+  // ── Day 10 · general (set 2) ────────────────────────────────────────
+  {
+    id: "story-10",
+    category: "general",
+    title: "The Negotiation",
+    body: `I asked for more today. And I got it.
+
+[EVENT] was the conversation I had been rehearsing in my head for weeks — the one where I advocate for myself instead of accepting the first offer, the default, the easy yes. My hands were not even shaking. That is how I knew the mental rehearsal had worked: my body had already done this a dozen times.
+
+I stated my case clearly. Not aggressively — clearly. I named my value with specifics: the results, the impact, the market data. I paused after asking, and I let the silence sit there. The old me would have filled it with apologies and backpedaling. Today's me just... waited. Silence is not rejection. Silence is thinking.
+
+They countered. I countered back. It was a real negotiation — respectful, direct, human. And when we landed, we landed somewhere better than I had dared to hope when this process started.
+
+Here is what I want to remember about today: [NAME] did not get what was given. [NAME] asked for what was deserved. That sentence would have been unthinkable a year ago. Now it is just... accurate.
+
+[GOAL] included this moment, even if I did not write it down at the time. The goal was never just the role or the title. It was becoming someone who advocates for themselves without flinching.
+
+[DATE]: the day I stopped leaving money — and respect — on the table. If you are rehearsing a hard conversation right now: keep going. The reps work. I am proof.`,
+  },
+  // ── Day 11 · athletic (set 2) ──────────────────────────────────────
+  {
+    id: "story-11",
+    category: "athletic",
+    title: "The Comeback",
+    body: `It was not going well. Let me start there, because the story is better when I am honest.
+
+Midway through [EVENT], I was off my game. Mistakes I do not usually make. The kind of stretch where you can feel confidence leaking out with every error. The old me would have collapsed inward — the spiral, the self-talk turning toxic, the quiet quitting while still technically competing.
+
+But I had rehearsed this too. Not just the victory — the wobble. In my visualization sessions, I had practiced the exact moment when things go wrong: the breath, the reset cue, the return to process. So when it happened for real, I recognized it. "Oh," I thought, almost calmly. "This is the part I trained for."
+
+One breath. Shoulders down. Eyes up. Next play.
+
+That is the whole comeback story, really. Not a dramatic montage — just a decision, repeated: return to the process. Stop playing the scoreboard in your head. Play the next moment. Then the next one.
+
+And slowly, it turned. Not all the way — I will not pretend this was a movie ending. But I finished strong, and I finished proud, because I did not quit on myself when it got hard. [NAME] is someone who resets. That is a better identity than "someone who never struggles."
+
+[GOAL] was never about perfection. It was about resilience — the practiced, deliberate kind. The kind you build in quiet mornings, alone with your breath, rehearsing the hard parts before they happen.
+
+[DATE] tested me. I passed — not because I was flawless, but because I was ready to recover. That is the real skill. That is the one I will keep training.`,
+  },
+  // ── Day 12 · interview (set 2) ─────────────────────────────────────
+  {
+    id: "story-12",
+    category: "interview",
+    title: "The Panel",
+    body: `Four people. One long table. Ninety minutes. [EVENT] was the full panel interview — the format I used to dread most, because it felt like being surrounded. Today it felt like being supported. Funny how the same room can feel different when you walk in prepared.
+
+I had a strategy, rehearsed in my head the night before: connect with each person individually. Not performing for the group — having four simultaneous conversations. I learned everyone's name beforehand. I made eye contact with the quiet one in the corner, the one nobody else was engaging. She asked the best question of the day.
+
+The technical deep-dive came forty minutes in. In the past, this is where I would have started hedging — "I think," "maybe," "sort of." Today I was direct. "Here's what I know, here's what I'd need to learn, here's how I'd approach it." Honesty about the gaps, confidence about the foundation. The panel nodded. You can feel when directness lands.
+
+Then the culture questions, the ones with no right answer. I told the truth about what I want: [GOAL]. Not the polished version — the real one. "I want to do work that matters, with people who take it seriously, and I want to keep growing." The hiring manager wrote something down. I choose to believe it was a good something.
+
+Walking out after ninety minutes, I was tired in the best way — the tired of having given everything, not the tired of having survived something. [NAME] does not dread panels anymore. [NAME] prepares for them, shows up honestly, and lets the chips fall.
+
+[DATE] was a test of endurance and authenticity. I brought both. Whatever comes next, I know exactly who showed up today — and I like that person.`,
+  },
+  // ── Day 13 · presentation (set 2) ───────────────────────────────────
+  {
+    id: "story-13",
+    category: "presentation",
+    title: "Teaching What I Know",
+    body: `Today I was not the one being evaluated. I was the one doing the teaching — [EVENT], me at the front of the room, sharing what I have learned with people who wanted to learn it. And I realized: this is what all the preparation was building toward. Not just performing well, but being able to lift others.
+
+I remember when I could barely get through a status update without my voice shaking. The distance between that version of me and today's version is not talent. It is reps. Hundreds of small, deliberate reps — visualizing, breathing, rehearsing, reflecting.
+
+Someone in the audience asked a question I could not answer. The old me would have panicked, fumbled, lost the room. Today's me said, "I don't know — let me find out and get back to you." And the room respected it. Because confidence is not having all the answers. It is being secure enough to admit what you don't know.
+
+After the session, two people stayed behind. One said my framework finally made something click for her. The other just wanted to talk — about nerves, about self-doubt, about whether it gets easier. I told them the truth: it gets different. The nerves do not disappear. You just get better at carrying them.
+
+[NAME] is becoming someone others look to — not because I am fearless, but because I am honest about the fear and do the work anyway. That is a better kind of authority.
+
+[GOAL] keeps evolving, and that is fine. Goals are supposed to grow as you do. [DATE] marks the day I stopped being just a practitioner and started being a guide. The visualization sessions continue — there is always a next room, a next audience, a next version to rehearse.`,
+  },
+  // ── Day 14 · general (set 2) ────────────────────────────────────────
+  {
+    id: "story-14",
+    category: "general",
+    title: "One Year From Now",
+    body: `I am writing this from the future — one year after [DATE], the day everything started to shift.
+
+Let me tell you where [NAME] is now. The role I was visualizing? I am in it. Not the fantasy version — the real one, with hard days and boring meetings and all. And it is better than the fantasy, because it is mine. I earned it the unglamorous way: preparation, persistence, and the daily discipline of showing up for myself before anyone asked me to.
+
+[EVENT] feels like a lifetime ago, but I remember exactly how I felt that morning: the nerves, the doubt, the voice saying "who do you think you are?" I remember choosing to rehearse courage instead of catastrophe. That choice — made quietly, alone, with my eyes closed and my breathing slow — turned out to be the hinge everything swung on.
+
+Here is what I know now that I did not know then: [GOAL] was never really about the outcome. The outcome was just the excuse. The real prize was becoming someone who does the work — the inner work, the unsexy reps, the five minutes every morning that nobody sees and everybody notices.
+
+People ask me now how I got here. They want the shortcut, the hack, the secret. I tell them there isn't one, and then I tell them the closest thing to one: decide who you want to be, rehearse being that person daily, and let time do the compounding. It is embarrassingly simple. It is brutally hard. It works.
+
+If you are at the beginning — if [DATE] is still ahead of you and the doubt is loud — hear me from the future: keep going. The version of you that you are rehearsing? That person is real. I know, because I am them now.
+
+One year from now, you will write your own version of this. Start today.`,
+  },
+];

@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/client";
 import { getUserSessions } from "@/lib/supabase/sessions";
 import StatsBar from "@/components/dashboard/StatsBar";
 import RoadmapTimeline from "@/components/dashboard/RoadmapTimeline";
+import DailyAffirmation from "@/components/dashboard/DailyAffirmation";
+import TodaysStory from "@/components/dashboard/TodaysStory";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { SessionRecord } from "@/types";
@@ -73,6 +75,10 @@ export default function DashboardPage() {
 
         {/* Stats */}
         {sessions.length > 0 && <StatsBar sessions={sessions} />}
+
+        {/* Today's story + affirmation */}
+        <TodaysStory />
+        <DailyAffirmation sessions={sessions} />
 
         {/* Roadmap */}
         <RoadmapTimeline sessions={sessions} />
